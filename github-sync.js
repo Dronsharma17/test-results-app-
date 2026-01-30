@@ -3,7 +3,7 @@
 // GitHub Configuration
 // These values should be updated with your actual repository details
 const GITHUB_CONFIG = {
-    owner: 'Dronsharma17',  // Replace with your GitHub username
+    owner: 'YOUR_GITHUB_USERNAME',  // Replace with your GitHub username
     repo: 'test-results-app',        // Replace with your repository name
     branch: 'main',                  // Usually 'main' or 'master'
     filePath: 'data.json'           // Path to data file in repository
@@ -152,3 +152,4 @@ async function validateGithubToken(token) {
         return false;
     }
 }
+                
