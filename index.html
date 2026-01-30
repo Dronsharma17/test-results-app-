@@ -4,15 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Test Results</title>
-
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff6b35">
-
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Offline Indicator -->
     <div id="offlineOverlay" class="offline-overlay hidden">
         <div class="offline-content">
             <svg class="offline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -21,70 +17,139 @@
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
             <h2>No Internet Connection</h2>
-            <p>This app requires an internet connection to work. Please check your connection and try again.</p>
+            <p>This app requires an internet connection to work.</p>
         </div>
     </div>
 
-    <!-- Main App Container -->
     <div id="app" class="app-container">
-        <!-- Tests List View -->
+        
         <div id="testsListView" class="view active">
             <div class="header">
                 <h1>Your tests</h1>
                 <a href="#" class="view-all">View all</a>
             </div>
-
             <div class="tabs">
                 <button class="tab">Upcoming</button>
                 <button class="tab active">Past Tests</button>
                 <button class="tab">Missed Tests</button>
             </div>
-
-            <div class="test-carousel-container">
-                <div id="testCarousel" class="test-carousel"></div>
-            </div>
-
+            <div id="testCarousel" class="test-carousel"></div>
             <div class="promo-cards">
                 <div class="promo-card">
                     <div class="promo-icon">📈</div>
-                    <div class="promo-text">
-                        <strong>Checked your Test Results?</strong><br>
-                        Open your Improvement Book, revise the right questions, and feel confident
-                    </div>
-                    <div class="promo-arrow">›</div>
-                </div>
-
-                <div class="promo-card">
-                    <div class="promo-icon">📊</div>
-                    <div class="promo-text">
-                        <strong>Analyse your performance</strong><br>
-                        across tests
-                    </div>
-                    <div class="promo-arrow">›</div>
+                    <div class="promo-text"><strong>Analyse performance</strong></div>
                 </div>
             </div>
         </div>
+
+        <div id="resultView" class="view">
+            <div class="header">
+                <button onclick="goBack()" class="btn-back">←</button>
+                <h1 id="resultTestName">Test Result</h1>
+            </div>
+            <div class="result-content">
+                <p id="resultTestInfo"></p>
+                <div class="score-card">
+                    <h2>Score: <span id="userScore">0</span> / <span id="maxScore">300</span></h2>
+                    <p>Class Avg: <span id="classAvg">0</span></p>
+                </div>
+                
+                <div id="rankingPanels" class="ranking-panels">
+                    <div class="ranking-panel">AIR: <span id="airRank">0</span> / <span id="airTotal">0</span></div>
+                    <div class="ranking-panel">Center: <span id="centerRank">0</span> / <span id="centerTotal">0</span></div>
+                </div>
+
+                <div class="stats-grid">
+                    <div>Correct: <span id="correctCount">0</span></div>
+                    <div>Incorrect: <span id="incorrectCount">0</span></div>
+                </div>
+
+                <table class="subject-table">
+                    <thead>
+                        <tr><th>Subject</th><th>Score</th><th>C</th><th>I</th></tr>
+                    </thead>
+                    <tbody id="subjectTableBody"></tbody>
+                </table>
+
+                <h3>Top Performers</h3>
+                <div id="leaderboardPreview"></div>
+            </div>
+        </div>
+
+        <div id="leaderboardView" class="view">
+            <div class="header">
+                <button onclick="goBackFromLeaderboard()" class="btn-back">←</button>
+                <h1>Leaderboard</h1>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Rank</th><th>Name</th><th>Score</th></tr>
+                    </thead>
+                    <tbody id="leaderboardTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="editorView" class="view">
+            <div class="header">
+                <button onclick="closeEditor()" class="btn-back">✕</button>
+                <h1>Test Editor</h1>
+                <button onclick="saveEditorChanges()" class="btn-primary">Save</button>
+            </div>
+            <div class="editor-content">
+                <div class="admin-section">
+                    <label>GitHub Token</label>
+                    <input type="password" id="githubToken" placeholder="Paste Token Here">
+                    <button onclick="saveGithubToken()">Save Token</button>
+                </div>
+
+                <hr>
+
+                <div class="form-group">
+                    <label>Action</label>
+                    <select id="testSelector" onchange="loadTestInEditor()"></select>
+                </div>
+
+                <div class="form-grid">
+                    <input type="text" id="editTestName" placeholder="Test Name">
+                    <input type="date" id="editTestDate">
+                    <select id="editTestMode"><option value="CBT">CBT</option><option value="Offline">Offline</option></select>
+                    <input type="number" id="editClassAvg" placeholder="Class Average">
+                </div>
+
+                <h3>Scores & Stats</h3>
+                <div class="form-grid">
+                    <input type="number" id="editCorrect" placeholder="Correct Qs">
+                    <input type="number" id="editIncorrect" placeholder="Incorrect Qs">
+                    <input type="number" id="editUnattempted" placeholder="Unattempted">
+                    <input type="text" id="editAvgTime" placeholder="Avg Time (e.g. 02:30)">
+                </div>
+
+                <h3>Subject Scores</h3>
+                <div class="form-grid">
+                    <input type="number" id="editMathsScore" placeholder="Maths Score">
+                    <input type="number" id="editPhysicsScore" placeholder="Physics Score">
+                    <input type="number" id="editChemistryScore" placeholder="Chem Score">
+                </div>
+
+                <h3>Leaderboard (Top 10)</h3>
+                <div id="leaderboardEditor"></div>
+
+                <button id="deleteTestBtn" class="btn-danger" style="display:none" onclick="deleteCurrentTest()">Delete Test</button>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <button class="nav-item" id="testsNavBtn">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-            </svg>
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
             <span>Tests</span>
         </button>
     </div>
 
-    <script src="app.js"></script>
     <script src="github-sync.js"></script>
-
-    <!-- Service Worker -->
-    <script>
-    if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("sw.js");
-    }
-    </script>
+    <script src="app.js"></script>
 </body>
-</html>                
+</html>
