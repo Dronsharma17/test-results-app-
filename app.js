@@ -15,15 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadData();
     setupEventListeners();
     setupLongPressEditor();
-
-    // Check for Editor URL Parameter
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('editor') === '1') {
-        // We wait a tiny bit to ensure data is loaded before opening
-        setTimeout(() => {
-            openEditor();
-        }, 500);
-    }
 });
 
 // Check Online Status
@@ -720,4 +711,4 @@ async function saveToGithub() {
         console.error('Error syncing to GitHub:', error);
         alert('Failed to sync to GitHub. Please check your token and try again.');
     }
-}
+                                                               }
