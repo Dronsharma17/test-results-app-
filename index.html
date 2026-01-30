@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Test Results</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff6b35">
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -35,11 +40,8 @@
                 <button class="tab">Missed Tests</button>
             </div>
 
-            <!-- Test Cards Carousel -->
             <div class="test-carousel-container">
-                <div id="testCarousel" class="test-carousel">
-                    <!-- Test cards will be dynamically inserted here -->
-                </div>
+                <div id="testCarousel" class="test-carousel"></div>
             </div>
 
             <div class="promo-cards">
@@ -61,359 +63,6 @@
                     <div class="promo-arrow">›</div>
                 </div>
             </div>
-
-            <div class="aiot-section">
-                <h2>All India Open Test</h2>
-                <div class="aiot-card">
-                    <div class="aiot-content">
-                        <h3>Your final result is out now!</h3>
-                        <button class="btn-primary">Check my result</button>
-                    </div>
-                    <div class="aiot-icon">📋</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Result Detail View -->
-        <div id="resultView" class="view">
-            <div class="result-header">
-                <button class="back-btn" onclick="goBack()">‹</button>
-                <div class="result-title">
-                    <h2 id="resultTestName">SCORE TEST 11</h2>
-                    <p id="resultTestInfo">18th Jan, 2026 • CBT Mode</p>
-                </div>
-                <button class="dropdown-btn">Main Test ⌄</button>
-            </div>
-
-            <!-- Score Circle Section -->
-            <div class="score-section">
-                <div class="score-circle">
-                    <div class="score-value">
-                        <span id="userScore">196</span>
-                        <div class="score-divider"></div>
-                        <span id="maxScore">300</span>
-                    </div>
-                </div>
-                <div class="class-average">Class average : <span id="classAvg">80</span></div>
-                
-                <!-- Climbing illustration -->
-                <div class="climb-illustration"></div>
-            </div>
-
-            <!-- Swipeable Ranking Panels -->
-            <div class="ranking-panels">
-                <div class="panels-container" id="rankingPanels">
-                    <div class="ranking-panel">
-                        <h3>AIR Rank</h3>
-                        <div class="rank-value"><span id="airRank">524</span>/<span id="airTotal">14,283</span></div>
-                        <div class="percentile" id="airPercentile">96.34 Percentile</div>
-                    </div>
-                    <div class="ranking-panel">
-                        <h3>Center Rank</h3>
-                        <div class="rank-value"><span id="centerRank">36</span>/<span id="centerTotal">710</span></div>
-                        <div class="percentile" id="centerPercentile">95.07 percentile</div>
-                    </div>
-                    <div class="ranking-panel">
-                        <h3>Campus Rank</h3>
-                        <div class="rank-value"><span id="campusRank">10</span>/<span id="campusTotal">132</span></div>
-                        <div class="percentile" id="campusPercentile">93.18 percentile</div>
-                    </div>
-                </div>
-                <div class="panel-indicators">
-                    <span class="indicator active"></span>
-                    <span class="indicator"></span>
-                    <span class="indicator"></span>
-                </div>
-            </div>
-
-            <button class="btn-view-solution">View test solution</button>
-
-            <!-- Tabs Section -->
-            <div class="detail-tabs">
-                <button class="detail-tab active" data-tab="overview">Overview</button>
-                <button class="detail-tab" data-tab="subjects">Subjects</button>
-                <button class="detail-tab" data-tab="chapters">Chapters</button>
-            </div>
-
-            <!-- Overview Tab Content -->
-            <div id="overviewTab" class="tab-content active">
-                <div class="question-details">
-                    <h3>Question details</h3>
-                    <p>You've answered <span id="correctPercent">72%</span> questions correctly</p>
-
-                    <div class="stat-card stat-correct">
-                        <div class="stat-info">
-                            <span class="stat-label">Correct</span>
-                            <span class="stat-value"><span id="correctCount">54</span> <span class="stat-marks">(+<span id="correctMarks">216.00</span> marks)</span></span>
-                        </div>
-                        <span class="stat-arrow">›</span>
-                    </div>
-
-                    <div class="stat-card stat-incorrect">
-                        <div class="stat-info">
-                            <span class="stat-label">Incorrect</span>
-                            <span class="stat-value"><span id="incorrectCount">15</span> <span class="stat-marks">(-<span id="incorrectMarks">15.00</span> marks)</span></span>
-                        </div>
-                        <span class="stat-arrow">›</span>
-                    </div>
-
-                    <div class="stat-card stat-unattempted">
-                        <div class="stat-info">
-                            <span class="stat-label">Unattempted</span>
-                            <span class="stat-value" id="unattemptedCount">6</span>
-                        </div>
-                        <span class="stat-arrow">›</span>
-                    </div>
-
-                    <div class="avg-time">
-                        <span class="clock-icon">🕐</span>
-                        On avg you spent <strong id="avgTime">02 mins 23 secs</strong> per question
-                    </div>
-                </div>
-
-                <div class="subject-overview">
-                    <h3>Subject Overview</h3>
-                    <table class="subject-table">
-                        <thead>
-                            <tr>
-                                <th>SUBJECT</th>
-                                <th>SCORE</th>
-                                <th>✓ Qs</th>
-                                <th>✗ Qs</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="subjectTableBody">
-                            <!-- Rows will be dynamically inserted -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="leaderboard-section">
-                    <h3>Leaderboard</h3>
-                    <div class="leaderboard-preview" id="leaderboardPreview">
-                        <!-- Preview will be dynamically inserted -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Subjects Tab Content -->
-            <div id="subjectsTab" class="tab-content">
-                <p>Subjects detailed view coming soon...</p>
-            </div>
-
-            <!-- Chapters Tab Content -->
-            <div id="chaptersTab" class="tab-content">
-                <p>Chapters detailed view coming soon...</p>
-            </div>
-        </div>
-
-        <!-- Leaderboard View -->
-        <div id="leaderboardView" class="view">
-            <div class="leaderboard-header">
-                <button class="back-btn" onclick="goBackFromLeaderboard()">‹</button>
-                <h2>Leaderboard</h2>
-            </div>
-
-            <div class="leaderboard-table-container">
-                <table class="leaderboard-table">
-                    <thead>
-                        <tr>
-                            <th class="fixed-col rank-col">RANK</th>
-                            <th class="fixed-col name-col">NAME</th>
-                            <th>SCORE</th>
-                            <th>✓ QS</th>
-                            <th>✗ QS</th>
-                            <th>TIME TAKEN</th>
-                            <th>CHEMISTRY</th>
-                            <th>MATHS</th>
-                            <th>PHYSICS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboardTableBody">
-                        <!-- Rows will be dynamically inserted -->
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="user-row">
-                <div class="user-row-inner">
-                    <div class="fixed-col rank-col">You (Rank <span id="userAirRank">524</span>)</div>
-                    <div class="fixed-col name-col"></div>
-                    <div id="userLeaderboardScore">201</div>
-                    <div id="userLeaderboardCorrect">54</div>
-                    <div id="userLeaderboardIncorrect">15</div>
-                    <div id="userLeaderboardTime">2H 59M</div>
-                    <div id="userLeaderboardChem">66</div>
-                    <div id="userLeaderboardMaths">53</div>
-                    <div id="userLeaderboardPhys">82</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Hidden Editor View -->
-        <div id="editorView" class="view editor-view">
-            <div class="editor-header">
-                <button class="back-btn" onclick="closeEditor()">✕</button>
-                <h2>Test Editor</h2>
-                <button class="btn-save" onclick="saveEditorChanges()">Save</button>
-            </div>
-
-            <div class="editor-content">
-                <div class="editor-section">
-                    <h3>GitHub Token</h3>
-                    <p class="help-text">Enter your GitHub Personal Access Token to enable auto-sync</p>
-                    <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx">
-                    <button class="btn-secondary" onclick="saveGithubToken()">Save Token</button>
-                </div>
-
-                <div class="editor-section">
-                    <h3>Select Test</h3>
-                    <select id="testSelector" onchange="loadTestInEditor()">
-                        <option value="new">+ Create New Test</option>
-                    </select>
-                </div>
-
-                <div id="testEditorForm" class="editor-form">
-                    <div class="form-group">
-                        <label>Test Name</label>
-                        <input type="text" id="editTestName" placeholder="e.g., SCORE TEST 11">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" id="editTestDate">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Exam Mode</label>
-                        <select id="editTestMode">
-                            <option value="CBT">CBT</option>
-                            <option value="Online">Online</option>
-                            <option value="Offline">Offline</option>
-                        </select>
-                    </div>
-
-                    <h4>My Result</h4>
-
-                    <div class="form-group">
-                        <label>Class Average</label>
-                        <input type="number" id="editClassAvg" placeholder="80">
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Correct Questions</label>
-                            <input type="number" id="editCorrect" placeholder="54">
-                        </div>
-                        <div class="form-group">
-                            <label>Incorrect Questions</label>
-                            <input type="number" id="editIncorrect" placeholder="15">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Unattempted Questions</label>
-                        <input type="number" id="editUnattempted" placeholder="6">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Avg Time Per Question</label>
-                        <input type="text" id="editAvgTime" placeholder="02:23">
-                    </div>
-
-                    <h4>Rankings</h4>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>AIR Rank</label>
-                            <input type="number" id="editAirRank" placeholder="524">
-                        </div>
-                        <div class="form-group">
-                            <label>Total AIR</label>
-                            <input type="number" id="editAirTotal" placeholder="14283">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Center Rank</label>
-                            <input type="number" id="editCenterRank" placeholder="36">
-                        </div>
-                        <div class="form-group">
-                            <label>Total Center</label>
-                            <input type="number" id="editCenterTotal" placeholder="710">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Campus Rank</label>
-                            <input type="number" id="editCampusRank" placeholder="10">
-                        </div>
-                        <div class="form-group">
-                            <label>Total Campus</label>
-                            <input type="number" id="editCampusTotal" placeholder="132">
-                        </div>
-                    </div>
-
-                    <h4>Subject Scores</h4>
-
-                    <div class="subject-editor">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Maths Score</label>
-                                <input type="number" id="editMathsScore" placeholder="53">
-                            </div>
-                            <div class="form-group">
-                                <label>Maths Correct</label>
-                                <input type="number" id="editMathsCorrect" placeholder="15">
-                            </div>
-                            <div class="form-group">
-                                <label>Maths Incorrect</label>
-                                <input type="number" id="editMathsIncorrect" placeholder="7">
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Physics Score</label>
-                                <input type="number" id="editPhysicsScore" placeholder="82">
-                            </div>
-                            <div class="form-group">
-                                <label>Physics Correct</label>
-                                <input type="number" id="editPhysicsCorrect" placeholder="21">
-                            </div>
-                            <div class="form-group">
-                                <label>Physics Incorrect</label>
-                                <input type="number" id="editPhysicsIncorrect" placeholder="2">
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Chemistry Score</label>
-                                <input type="number" id="editChemistryScore" placeholder="66">
-                            </div>
-                            <div class="form-group">
-                                <label>Chemistry Correct</label>
-                                <input type="number" id="editChemistryCorrect" placeholder="18">
-                            </div>
-                            <div class="form-group">
-                                <label>Chemistry Incorrect</label>
-                                <input type="number" id="editChemistryIncorrect" placeholder="6">
-                            </div>
-                        </div>
-                    </div>
-
-                    <h4>Top 10 Leaderboard</h4>
-                    <div id="leaderboardEditor">
-                        <!-- 10 student entries will be dynamically inserted -->
-                    </div>
-
-                    <button class="btn-danger" onclick="deleteCurrentTest()" id="deleteTestBtn">Delete This Test</button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -430,5 +79,12 @@
 
     <script src="app.js"></script>
     <script src="github-sync.js"></script>
+
+    <!-- Service Worker -->
+    <script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js");
+    }
+    </script>
 </body>
-  </html>
+</html>                
