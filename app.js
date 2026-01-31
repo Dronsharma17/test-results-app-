@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadGithubToken();
     loadData();
     setupEventListeners();
-    setupLongPressEditor();
+    setupLongPressEditor(); // ✅ 6-second hold mechanism
 });
 
 // Check Online Status
@@ -112,13 +112,11 @@ function createTestCard(test) {
 
 // View Syllabus (Placeholder)
 function viewSyllabus(testId) {
-    // Placeholder - does nothing
     console.log('View syllabus for:', testId);
 }
 
 // Reattempt Test (Placeholder)
 function reattemptTest(testId) {
-    // Placeholder - does nothing
     console.log('Reattempt test:', testId);
 }
 
@@ -128,13 +126,11 @@ function viewResult(testId) {
     const test = appData.tests.find(t => t.id === testId);
     if (!test) return;
     
-    // Populate result view
     document.getElementById('resultTestName').textContent = test.name;
     const dateObj = new Date(test.date);
     const formattedDate = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     document.getElementById('resultTestInfo').textContent = `${formattedDate} • ${test.mode} Mode`;
     
-    // Score
     const totalScore = test.myResult.subjects.maths.score + 
                        test.myResult.subjects.physics.score + 
                        test.myResult.subjects.chemistry.score;
@@ -142,7 +138,6 @@ function viewResult(testId) {
     document.getElementById('maxScore').textContent = test.myResult.maxScore || 300;
     document.getElementById('classAvg').textContent = test.classAverage || 80;
     
-    // Rankings
     document.getElementById('airRank').textContent = test.myResult.rankings.air.rank.toLocaleString();
     document.getElementById('airTotal').textContent = test.myResult.rankings.air.total.toLocaleString();
     document.getElementById('airPercentile').textContent = calculatePercentile(test.myResult.rankings.air.rank, test.myResult.rankings.air.total) + ' Percentile';
@@ -155,7 +150,6 @@ function viewResult(testId) {
     document.getElementById('campusTotal').textContent = test.myResult.rankings.campus.total.toLocaleString();
     document.getElementById('campusPercentile').textContent = calculatePercentile(test.myResult.rankings.campus.rank, test.myResult.rankings.campus.total) + ' percentile';
     
-    // Question details
     const correctMarks = test.myResult.correctQuestions * 4;
     const incorrectMarks = test.myResult.incorrectQuestions * 1;
     const totalQuestions = test.myResult.correctQuestions + test.myResult.incorrectQuestions + test.myResult.unattemptedQuestions;
@@ -169,7 +163,6 @@ function viewResult(testId) {
     document.getElementById('unattemptedCount').textContent = test.myResult.unattemptedQuestions;
     document.getElementById('avgTime').textContent = test.myResult.avgTimePerQuestion || '02:23';
     
-    // Subject table
     const subjectTableBody = document.getElementById('subjectTableBody');
     subjectTableBody.innerHTML = `
         <tr>
@@ -195,19 +188,15 @@ function viewResult(testId) {
         </tr>
     `;
     
-    // Leaderboard preview
     renderLeaderboardPreview(test);
-    
     switchView('resultView');
 }
 
-// Calculate Percentile
 function calculatePercentile(rank, total) {
     const percentile = ((total - rank) / total) * 100;
     return percentile.toFixed(2);
 }
 
-// Render Leaderboard Preview
 function renderLeaderboardPreview(test) {
     const preview = document.getElementById('leaderboardPreview');
     preview.innerHTML = '';
@@ -234,7 +223,6 @@ function renderLeaderboardPreview(test) {
         preview.appendChild(item);
     });
     
-    // Add "View Details" button
     const viewDetailsBtn = document.createElement('button');
     viewDetailsBtn.className = 'btn-primary';
     viewDetailsBtn.textContent = 'View Details';
@@ -243,7 +231,6 @@ function renderLeaderboardPreview(test) {
     preview.appendChild(viewDetailsBtn);
 }
 
-// View Leaderboard
 function viewLeaderboard(testId) {
     const test = appData.tests.find(t => t.id === testId);
     if (!test) return;
@@ -278,7 +265,6 @@ function viewLeaderboard(testId) {
         tableBody.appendChild(row);
     });
     
-    // Update user row
     const totalScore = test.myResult.subjects.maths.score + 
                        test.myResult.subjects.physics.score + 
                        test.myResult.subjects.chemistry.score;
@@ -295,7 +281,6 @@ function viewLeaderboard(testId) {
     switchView('leaderboardView');
 }
 
-// Go Back
 function goBack() {
     switchView('testsListView');
 }
@@ -304,7 +289,6 @@ function goBackFromLeaderboard() {
     switchView('resultView');
 }
 
-// Switch View
 function switchView(viewId) {
     document.querySelectorAll('.view').forEach(view => {
         view.classList.remove('active');
@@ -313,11 +297,8 @@ function switchView(viewId) {
     currentView = viewId;
 }
 
-// Setup Event Listeners
 function setupEventListeners() {
-    // Ranking panels swipe
     const rankingPanels = document.getElementById('rankingPanels');
-    let startX = 0;
     let currentIndex = 0;
     
     rankingPanels.addEventListener('scroll', function() {
@@ -330,7 +311,6 @@ function setupEventListeners() {
         }
     });
     
-    // Detail tabs
     document.querySelectorAll('.detail-tab').forEach(tab => {
         tab.addEventListener('click', function() {
             const tabName = this.dataset.tab;
@@ -339,7 +319,6 @@ function setupEventListeners() {
     });
 }
 
-// Update Panel Indicators
 function updatePanelIndicators(index) {
     document.querySelectorAll('.indicator').forEach((indicator, i) => {
         if (i === index) {
@@ -350,9 +329,7 @@ function updatePanelIndicators(index) {
     });
 }
 
-// Switch Detail Tab
 function switchDetailTab(tabName) {
-    // Update tab buttons
     document.querySelectorAll('.detail-tab').forEach(tab => {
         if (tab.dataset.tab === tabName) {
             tab.classList.add('active');
@@ -361,50 +338,112 @@ function switchDetailTab(tabName) {
         }
     });
     
-    // Update tab content
     document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
     });
     document.getElementById(tabName + 'Tab').classList.add('active');
 }
 
-// Setup Long Press Editor
+// ✅ FIXED: 6-Second Hold to Open Editor
 function setupLongPressEditor() {
     const testsBtn = document.getElementById('testsNavBtn');
+    if (!testsBtn) {
+        console.error('Tests button not found!');
+        return;
+    }
+    
     let pressTimer;
+    let progressIndicator;
     
+    // Create visual progress indicator
+    progressIndicator = document.createElement('div');
+    progressIndicator.id = 'pressProgress';
+    progressIndicator.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 6px;
+        background: rgba(200, 200, 200, 0.3);
+        border-radius: 3px;
+        overflow: hidden;
+        display: none;
+        z-index: 1000;
+    `;
+    
+    const progressBar = document.createElement('div');
+    progressBar.style.cssText = `
+        width: 0%;
+        height: 100%;
+        background: #0066ff;
+        transition: width 6s linear;
+    `;
+    progressIndicator.appendChild(progressBar);
+    document.body.appendChild(progressIndicator);
+    
+    // Touch events (mobile)
     testsBtn.addEventListener('touchstart', function(e) {
-        pressTimer = setTimeout(() => {
-            openEditor();
-        }, 6000);
+        e.preventDefault();
+        startPress();
     });
     
-    testsBtn.addEventListener('touchend', function() {
-        clearTimeout(pressTimer);
+    testsBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        cancelPress();
     });
     
-    testsBtn.addEventListener('touchmove', function() {
-        clearTimeout(pressTimer);
+    testsBtn.addEventListener('touchmove', function(e) {
+        cancelPress();
     });
     
-    // For desktop testing
+    // Mouse events (desktop)
     testsBtn.addEventListener('mousedown', function(e) {
-        pressTimer = setTimeout(() => {
-            openEditor();
-        }, 6000);
+        e.preventDefault();
+        startPress();
     });
     
-    testsBtn.addEventListener('mouseup', function() {
-        clearTimeout(pressTimer);
+    testsBtn.addEventListener('mouseup', function(e) {
+        e.preventDefault();
+        cancelPress();
     });
     
     testsBtn.addEventListener('mouseleave', function() {
-        clearTimeout(pressTimer);
+        cancelPress();
     });
+    
+    function startPress() {
+        // Show and animate progress bar
+        progressIndicator.style.display = 'block';
+        progressBar.style.width = '100%';
+        
+        // Set timer for 6 seconds
+        pressTimer = setTimeout(() => {
+            cancelPress();
+            openEditor();
+        }, 6000); // ✅ 6 SECONDS
+    }
+    
+    function cancelPress() {
+        clearTimeout(pressTimer);
+        progressIndicator.style.display = 'none';
+        progressBar.style.width = '0%';
+        // Remove transition temporarily to reset instantly
+        progressBar.style.transition = 'none';
+        setTimeout(() => {
+            progressBar.style.transition = 'width 6s linear';
+        }, 10);
+    }
 }
 
-// Open Editor
+// ✅ FIXED: Open Editor (Always starts fresh)
 function openEditor() {
+    console.log('🔓 Opening Editor');
+    
+    // IMPORTANT: Reset editor state FIRST
+    editorMode = 'new';
+    currentEditingTestId = null;
+    
     // Populate test selector
     const testSelector = document.getElementById('testSelector');
     testSelector.innerHTML = '<option value="new">+ Create New Test</option>';
@@ -416,9 +455,10 @@ function openEditor() {
         testSelector.appendChild(option);
     });
     
+    // IMPORTANT: Set selector to "new" explicitly
+    testSelector.value = 'new';
+    
     // Reset form for new test
-    editorMode = 'new';
-    currentEditingTestId = null;
     resetEditorForm();
     
     // Show delete button only when editing
@@ -427,12 +467,10 @@ function openEditor() {
     switchView('editorView');
 }
 
-// Close Editor
 function closeEditor() {
     switchView(currentView === 'editorView' ? 'testsListView' : currentView);
 }
 
-// Load Test in Editor
 function loadTestInEditor() {
     const testSelector = document.getElementById('testSelector');
     const testId = testSelector.value;
@@ -453,7 +491,6 @@ function loadTestInEditor() {
     }
 }
 
-// Reset Editor Form
 function resetEditorForm() {
     document.getElementById('editTestName').value = '';
     document.getElementById('editTestDate').value = '';
@@ -479,11 +516,9 @@ function resetEditorForm() {
     document.getElementById('editChemistryCorrect').value = '';
     document.getElementById('editChemistryIncorrect').value = '';
     
-    // Generate leaderboard editor
     generateLeaderboardEditor([]);
 }
 
-// Populate Editor Form
 function populateEditorForm(test) {
     document.getElementById('editTestName').value = test.name;
     document.getElementById('editTestDate').value = test.date;
@@ -509,11 +544,9 @@ function populateEditorForm(test) {
     document.getElementById('editChemistryCorrect').value = test.myResult.subjects.chemistry.correct;
     document.getElementById('editChemistryIncorrect').value = test.myResult.subjects.chemistry.incorrect;
     
-    // Generate leaderboard editor
     generateLeaderboardEditor(test.leaderboard);
 }
 
-// Generate Leaderboard Editor
 function generateLeaderboardEditor(leaderboard) {
     const container = document.getElementById('leaderboardEditor');
     container.innerHTML = '';
@@ -577,9 +610,12 @@ function generateLeaderboardEditor(leaderboard) {
     }
 }
 
-// Save Editor Changes
+// ✅ FIXED: Save Editor Changes with Debug Logging
 async function saveEditorChanges() {
-    // Collect form data
+    console.log('💾 Saving test...');
+    console.log('Editor Mode:', editorMode);
+    console.log('Current Editing Test ID:', currentEditingTestId);
+    
     const testData = {
         id: editorMode === 'new' ? 'test_' + Date.now() : currentEditingTestId,
         name: document.getElementById('editTestName').value,
@@ -628,7 +664,8 @@ async function saveEditorChanges() {
         leaderboard: []
     };
     
-    // Collect leaderboard data
+    console.log('Test ID being saved:', testData.id);
+    
     for (let i = 1; i <= 10; i++) {
         const name = document.getElementById(`student${i}Name`).value;
         if (name) {
@@ -646,27 +683,25 @@ async function saveEditorChanges() {
         }
     }
     
-    // Update appData
     if (editorMode === 'new') {
+        console.log('✅ Adding NEW test');
         appData.tests.push(testData);
     } else {
+        console.log('✏️ Editing EXISTING test');
         const index = appData.tests.findIndex(t => t.id === currentEditingTestId);
         if (index !== -1) {
             appData.tests[index] = testData;
         }
     }
     
-    // Save to GitHub
-    await saveToGithub();
+    console.log('Total tests now:', appData.tests.length);
     
-    // Refresh UI
+    await saveToGithub();
     renderTestsList();
     closeEditor();
-    
     alert('Test saved successfully!');
 }
 
-// Delete Current Test
 async function deleteCurrentTest() {
     if (!currentEditingTestId) return;
     
@@ -679,7 +714,6 @@ async function deleteCurrentTest() {
     }
 }
 
-// Load Github Token
 function loadGithubToken() {
     const token = localStorage.getItem('githubToken');
     if (token) {
@@ -687,7 +721,6 @@ function loadGithubToken() {
     }
 }
 
-// Save Github Token
 function saveGithubToken() {
     const token = document.getElementById('githubToken').value;
     if (token) {
@@ -696,7 +729,6 @@ function saveGithubToken() {
     }
 }
 
-// Save to GitHub
 async function saveToGithub() {
     const token = localStorage.getItem('githubToken');
     if (!token) {
@@ -711,4 +743,4 @@ async function saveToGithub() {
         console.error('Error syncing to GitHub:', error);
         alert('Failed to sync to GitHub. Please check your token and try again.');
     }
-                                                               }
+}
