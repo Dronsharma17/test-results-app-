@@ -140,6 +140,65 @@
         }
       },
       "leaderboard": []
+    },
+    {
+      "id": "test_1769888431024",
+      "name": "",
+      "date": "",
+      "mode": "CBT",
+      "duration": "180 Min",
+      "classAverage": 80,
+      "myResult": {
+        "correctQuestions": 0,
+        "incorrectQuestions": 0,
+        "unattemptedQuestions": 0,
+        "avgTimePerQuestion": "02:23",
+        "maxScore": 300,
+        "rankings": {
+          "air": {
+            "rank": 0,
+            "total": 0
+          },
+          "center": {
+            "rank": 0,
+            "total": 0
+          },
+          "campus": {
+            "rank": 0,
+            "total": 0
+          }
+        },
+        "subjects": {
+          "maths": {
+            "score": 0,
+            "correct": 0,
+            "incorrect": 0
+          },
+          "physics": {
+            "score": 0,
+            "correct": 0,
+            "incorrect": 0
+          },
+          "chemistry": {
+            "score": 0,
+            "correct": 0,
+            "incorrect": 0
+          }
+        }
+      },
+      "leaderboard": [
+        {
+          "rank": 2,
+          "name": "Fg",
+          "score": 55,
+          "correctQs": 56,
+          "incorrectQs": 5,
+          "timeTaken": "3",
+          "maths": 66,
+          "physics": 66,
+          "chemistry": 66
+        }
+      ]
     }
   ]
 }
