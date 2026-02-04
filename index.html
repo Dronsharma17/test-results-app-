@@ -309,6 +309,16 @@
                         </select>
                     </div>
 
+                    <!-- ✅ NEW: Max Marks Selection -->
+                    <div class="form-group">
+                        <label>Maximum Marks</label>
+                        <select id="editMaxMarks" onchange="toggleMarkingSchemeFields()">
+                            <option value="300">300 Marks (Auto +4, -1)</option>
+                            <option value="180">180 Marks (Manual Entry)</option>
+                            <option value="186">186 Marks (Manual Entry)</option>
+                        </select>
+                    </div>
+
                     <h4>My Result</h4>
 
                     <div class="form-group">
@@ -324,6 +334,21 @@
                         <div class="form-group">
                             <label>Incorrect Questions</label>
                             <input type="number" id="editIncorrect" placeholder="15">
+                        </div>
+                    </div>
+
+                    <!-- ✅ NEW: Manual Marks Entry (Only for 180/186 marks) -->
+                    <div id="manualMarksSection" style="display: none;">
+                        <p class="help-text" style="color: #666; font-size: 14px; margin: 10px 0;">📝 For 180/186 marks tests, enter marks manually (not auto-calculated)</p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Marks from Correct</label>
+                                <input type="number" step="0.01" id="editCorrectMarks" placeholder="216.00">
+                            </div>
+                            <div class="form-group">
+                                <label>Marks from Incorrect (negative)</label>
+                                <input type="number" step="0.01" id="editIncorrectMarks" placeholder="15.00">
+                            </div>
                         </div>
                     </div>
 
@@ -462,4 +487,4 @@
         }
     </script>
 </body>
-    </html>
+                            </html>
