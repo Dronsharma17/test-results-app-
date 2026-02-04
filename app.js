@@ -5,7 +5,7 @@ let appData = {
 
 let currentTestId = null;
 let currentView = 'testsListView';
-let editorMode = 'new'; // 'new' or 'edit'
+let editorMode = 'new';
 let currentEditingTestId = null;
 
 // Initialize App
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadGithubToken();
     loadData();
     setupEventListeners();
-    setupLongPressEditor(); // ✅ 6-second hold mechanism
+    setupLongPressEditor();
 });
 
 // Check Online Status
@@ -46,7 +46,6 @@ async function loadData() {
             appData = await response.json();
             renderTestsList();
         } else {
-            // Initialize with empty data
             appData = { tests: [] };
             renderTestsList();
         }
@@ -67,7 +66,6 @@ function renderTestsList() {
         return;
     }
     
-    // Sort tests by date (newest first)
     const sortedTests = [...appData.tests].sort((a, b) => new Date(b.date) - new Date(a.date));
     
     sortedTests.forEach(test => {
@@ -110,12 +108,10 @@ function createTestCard(test) {
     return card;
 }
 
-// View Syllabus (Placeholder)
 function viewSyllabus(testId) {
     console.log('View syllabus for:', testId);
 }
 
-// Reattempt Test (Placeholder)
 function reattemptTest(testId) {
     console.log('Reattempt test:', testId);
 }
@@ -131,9 +127,11 @@ function viewResult(testId) {
     const formattedDate = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     document.getElementById('resultTestInfo').textContent = `${formattedDate} • ${test.mode} Mode`;
     
+    // Calculate total score from subjects
     const totalScore = test.myResult.subjects.maths.score + 
                        test.myResult.subjects.physics.score + 
                        test.myResult.subjects.chemistry.score;
+    
     document.getElementById('userScore').textContent = totalScore;
     document.getElementById('maxScore').textContent = test.myResult.maxScore || 300;
     document.getElementById('classAvg').textContent = test.classAverage || 80;
@@ -150,10 +148,21 @@ function viewResult(testId) {
     document.getElementById('campusTotal').textContent = test.myResult.rankings.campus.total.toLocaleString();
     document.getElementById('campusPercentile').textContent = calculatePercentile(test.myResult.rankings.campus.rank, test.myResult.rankings.campus.total) + ' percentile';
     
-    const correctMarks = test.myResult.correctQuestions * 4;
-    const incorrectMarks = test.myResult.incorrectQuestions * 1;
+    // ✅ UPDATED: Handle marking schemes
+    let correctMarks, incorrectMarks;
+    
+    if (test.myResult.maxScore === 300) {
+        // For 300 marks: AUTO-CALCULATE using +4, -1 scheme
+        correctMarks = test.myResult.correctQuestions * 4;
+        incorrectMarks = test.myResult.incorrectQuestions * 1;
+    } else {
+        // For 180/186 marks: USE MANUALLY ENTERED VALUES
+        correctMarks = test.myResult.correctMarks || 0;
+        incorrectMarks = test.myResult.incorrectMarks || 0;
+    }
+    
     const totalQuestions = test.myResult.correctQuestions + test.myResult.incorrectQuestions + test.myResult.unattemptedQuestions;
-    const correctPercent = Math.round((test.myResult.correctQuestions / totalQuestions) * 100);
+    const correctPercent = totalQuestions > 0 ? Math.round((test.myResult.correctQuestions / totalQuestions) * 100) : 0;
     
     document.getElementById('correctPercent').textContent = correctPercent + '%';
     document.getElementById('correctCount').textContent = test.myResult.correctQuestions;
@@ -344,7 +353,6 @@ function switchDetailTab(tabName) {
     document.getElementById(tabName + 'Tab').classList.add('active');
 }
 
-// ✅ FIXED: 6-Second Hold to Open Editor
 function setupLongPressEditor() {
     const testsBtn = document.getElementById('testsNavBtn');
     if (!testsBtn) {
@@ -355,7 +363,6 @@ function setupLongPressEditor() {
     let pressTimer;
     let progressIndicator;
     
-    // Create visual progress indicator
     progressIndicator = document.createElement('div');
     progressIndicator.id = 'pressProgress';
     progressIndicator.style.cssText = `
@@ -382,7 +389,6 @@ function setupLongPressEditor() {
     progressIndicator.appendChild(progressBar);
     document.body.appendChild(progressIndicator);
     
-    // Touch events (mobile)
     testsBtn.addEventListener('touchstart', function(e) {
         e.preventDefault();
         startPress();
@@ -397,7 +403,6 @@ function setupLongPressEditor() {
         cancelPress();
     });
     
-    // Mouse events (desktop)
     testsBtn.addEventListener('mousedown', function(e) {
         e.preventDefault();
         startPress();
@@ -413,22 +418,18 @@ function setupLongPressEditor() {
     });
     
     function startPress() {
-        // Show and animate progress bar
         progressIndicator.style.display = 'block';
         progressBar.style.width = '100%';
-        
-        // Set timer for 6 seconds
         pressTimer = setTimeout(() => {
             cancelPress();
             openEditor();
-        }, 6000); // ✅ 6 SECONDS
+        }, 6000);
     }
     
     function cancelPress() {
         clearTimeout(pressTimer);
         progressIndicator.style.display = 'none';
         progressBar.style.width = '0%';
-        // Remove transition temporarily to reset instantly
         progressBar.style.transition = 'none';
         setTimeout(() => {
             progressBar.style.transition = 'width 6s linear';
@@ -436,15 +437,13 @@ function setupLongPressEditor() {
     }
 }
 
-// ✅ FIXED: Open Editor (Always starts fresh)
+// ✅ UPDATED: Open Editor
 function openEditor() {
     console.log('🔓 Opening Editor');
     
-    // IMPORTANT: Reset editor state FIRST
     editorMode = 'new';
     currentEditingTestId = null;
     
-    // Populate test selector
     const testSelector = document.getElementById('testSelector');
     testSelector.innerHTML = '<option value="new">+ Create New Test</option>';
     
@@ -455,14 +454,11 @@ function openEditor() {
         testSelector.appendChild(option);
     });
     
-    // IMPORTANT: Set selector to "new" explicitly
     testSelector.value = 'new';
-    
-    // Reset form for new test
     resetEditorForm();
-    
-    // Show delete button only when editing
     document.getElementById('deleteTestBtn').style.display = 'none';
+    
+    toggleMarkingSchemeFields();
     
     switchView('editorView');
 }
@@ -489,17 +485,36 @@ function loadTestInEditor() {
             document.getElementById('deleteTestBtn').style.display = 'block';
         }
     }
+    
+    toggleMarkingSchemeFields();
+}
+
+// ✅ NEW: Toggle fields based on max marks
+function toggleMarkingSchemeFields() {
+    const maxMarks = parseInt(document.getElementById('editMaxMarks').value);
+    const manualMarksSection = document.getElementById('manualMarksSection');
+    
+    if (maxMarks === 180 || maxMarks === 186) {
+        // Show manual entry fields for 180/186 marks
+        manualMarksSection.style.display = 'block';
+    } else {
+        // Hide for 300 marks (auto-calculation)
+        manualMarksSection.style.display = 'none';
+    }
 }
 
 function resetEditorForm() {
     document.getElementById('editTestName').value = '';
     document.getElementById('editTestDate').value = '';
     document.getElementById('editTestMode').value = 'CBT';
+    document.getElementById('editMaxMarks').value = '300';
     document.getElementById('editClassAvg').value = '';
     document.getElementById('editCorrect').value = '';
     document.getElementById('editIncorrect').value = '';
     document.getElementById('editUnattempted').value = '';
     document.getElementById('editAvgTime').value = '';
+    document.getElementById('editCorrectMarks').value = '';
+    document.getElementById('editIncorrectMarks').value = '';
     document.getElementById('editAirRank').value = '';
     document.getElementById('editAirTotal').value = '';
     document.getElementById('editCenterRank').value = '';
@@ -517,17 +532,21 @@ function resetEditorForm() {
     document.getElementById('editChemistryIncorrect').value = '';
     
     generateLeaderboardEditor([]);
+    toggleMarkingSchemeFields();
 }
 
 function populateEditorForm(test) {
     document.getElementById('editTestName').value = test.name;
     document.getElementById('editTestDate').value = test.date;
     document.getElementById('editTestMode').value = test.mode;
+    document.getElementById('editMaxMarks').value = test.myResult.maxScore || 300;
     document.getElementById('editClassAvg').value = test.classAverage || '';
     document.getElementById('editCorrect').value = test.myResult.correctQuestions;
     document.getElementById('editIncorrect').value = test.myResult.incorrectQuestions;
     document.getElementById('editUnattempted').value = test.myResult.unattemptedQuestions;
     document.getElementById('editAvgTime').value = test.myResult.avgTimePerQuestion || '';
+    document.getElementById('editCorrectMarks').value = test.myResult.correctMarks || '';
+    document.getElementById('editIncorrectMarks').value = test.myResult.incorrectMarks || '';
     document.getElementById('editAirRank').value = test.myResult.rankings.air.rank;
     document.getElementById('editAirTotal').value = test.myResult.rankings.air.total;
     document.getElementById('editCenterRank').value = test.myResult.rankings.center.rank;
@@ -545,6 +564,7 @@ function populateEditorForm(test) {
     document.getElementById('editChemistryIncorrect').value = test.myResult.subjects.chemistry.incorrect;
     
     generateLeaderboardEditor(test.leaderboard);
+    toggleMarkingSchemeFields();
 }
 
 function generateLeaderboardEditor(leaderboard) {
@@ -610,16 +630,30 @@ function generateLeaderboardEditor(leaderboard) {
     }
 }
 
-// ✅ FIXED: Save Editor Changes with Debug Logging
+// ✅ UPDATED: Save with validation and manual marks support
 async function saveEditorChanges() {
+    const testName = document.getElementById('editTestName').value.trim();
+    const testDate = document.getElementById('editTestDate').value;
+    
+    if (!testName) {
+        alert('⚠️ Please enter a test name!');
+        return;
+    }
+    
+    if (!testDate) {
+        alert('⚠️ Please select a test date!');
+        return;
+    }
+    
     console.log('💾 Saving test...');
     console.log('Editor Mode:', editorMode);
-    console.log('Current Editing Test ID:', currentEditingTestId);
+    
+    const maxScore = parseInt(document.getElementById('editMaxMarks').value);
     
     const testData = {
         id: editorMode === 'new' ? 'test_' + Date.now() : currentEditingTestId,
-        name: document.getElementById('editTestName').value,
-        date: document.getElementById('editTestDate').value,
+        name: testName,
+        date: testDate,
         mode: document.getElementById('editTestMode').value,
         duration: '180 Min',
         classAverage: parseInt(document.getElementById('editClassAvg').value) || 80,
@@ -628,7 +662,7 @@ async function saveEditorChanges() {
             incorrectQuestions: parseInt(document.getElementById('editIncorrect').value) || 0,
             unattemptedQuestions: parseInt(document.getElementById('editUnattempted').value) || 0,
             avgTimePerQuestion: document.getElementById('editAvgTime').value || '02:23',
-            maxScore: 300,
+            maxScore: maxScore,
             rankings: {
                 air: {
                     rank: parseInt(document.getElementById('editAirRank').value) || 0,
@@ -664,7 +698,13 @@ async function saveEditorChanges() {
         leaderboard: []
     };
     
-    console.log('Test ID being saved:', testData.id);
+    // ✅ Add manual marks for 180/186 tests
+    if (maxScore === 180 || maxScore === 186) {
+        testData.myResult.correctMarks = parseFloat(document.getElementById('editCorrectMarks').value) || 0;
+        testData.myResult.incorrectMarks = parseFloat(document.getElementById('editIncorrectMarks').value) || 0;
+    }
+    
+    console.log('Max Score:', maxScore);
     
     for (let i = 1; i <= 10; i++) {
         const name = document.getElementById(`student${i}Name`).value;
