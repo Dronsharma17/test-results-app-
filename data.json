@@ -1,50 +1,51 @@
 {
   "tests": [
     {
-      "id": "test_1769808507035",
-      "name": "SCORE TEST 11",
-      "date": "2026-01-18",
-      "mode": "CBT",
+      "id": "test_1770186627243",
+      "name": "SCORE TEST 1",
+      "date": "2026-02-01",
+      "mode": "Online",
       "duration": "180 Min",
-      "classAverage": 80,
+      "classAverage": 41,
       "myResult": {
-        "correctQuestions": 54,
+        "correctQuestions": 32,
         "incorrectQuestions": 15,
         "unattemptedQuestions": 6,
         "avgTimePerQuestion": "02:23",
         "maxScore": 300,
         "rankings": {
           "air": {
-            "rank": 524,
-            "total": 14283
+            "rank": 78,
+            "total": 979
           },
           "center": {
-            "rank": 36,
+            "rank": 53,
             "total": 710
           },
           "campus": {
-            "rank": 10,
-            "total": 132
+            "rank": 9,
+            "total": 86
           }
         },
         "subjects": {
           "maths": {
-            "score": 53,
-            "correct": 15,
-            "incorrect": 7
+            "score": 22,
+            "correct": 8,
+            "incorrect": 3
           },
           "physics": {
-            "score": 82,
-            "correct": 21,
-            "incorrect": 2
+            "score": 31,
+            "correct": 10,
+            "incorrect": 6
           },
           "chemistry": {
-            "score": 66,
-            "correct": 18,
+            "score": 33,
+            "correct": 14,
             "incorrect": 6
           }
         }
       },
       "leaderboard": []
-    },
-  
+    }
+  ]
+}
