@@ -95,6 +95,55 @@
         "incorrectMarks": 5
       },
       "leaderboard": []
+    },
+    {
+      "id": "test_1773239676349",
+      "name": "SCORE TEST 3",
+      "date": "2026-02-11",
+      "mode": "CBT",
+      "duration": "180 Min",
+      "classAverage": 39,
+      "myResult": {
+        "correctQuestions": 34,
+        "incorrectQuestions": 11,
+        "unattemptedQuestions": 9,
+        "avgTimePerQuestion": "02:23",
+        "maxScore": 186,
+        "rankings": {
+          "air": {
+            "rank": 498,
+            "total": 12889
+          },
+          "center": {
+            "rank": 33,
+            "total": 729
+          },
+          "campus": {
+            "rank": 7,
+            "total": 99
+          }
+        },
+        "subjects": {
+          "maths": {
+            "score": 27,
+            "correct": 8,
+            "incorrect": 3
+          },
+          "physics": {
+            "score": 36,
+            "correct": 13,
+            "incorrect": 5
+          },
+          "chemistry": {
+            "score": 34,
+            "correct": 13,
+            "incorrect": 3
+          }
+        },
+        "correctMarks": 104,
+        "incorrectMarks": 4
+      },
+      "leaderboard": []
     }
   ]
 }
